@@ -13,7 +13,7 @@ public class BatchApplication {
 	public static void main(String[] args) {
 
 		SpringApplication app = new SpringApplication(BatchApplication.class);
-		//app.setWebApplicationType(WebApplicationType.NONE);
+		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext ctl = app.run(args);
 	}
 }
