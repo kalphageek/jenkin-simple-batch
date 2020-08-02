@@ -10,7 +10,7 @@ public class ContinuousJobService {
         log.info(">>>>이것은 step1 입니다");
     }
     public void step2() {
-        log.info(">>>>이것은 step3 입니다");
+        log.info(">>>>이것은 step2 입니다");
     }
     public void step3() {
         log.info(">>>>이것은 step3 입니다");
