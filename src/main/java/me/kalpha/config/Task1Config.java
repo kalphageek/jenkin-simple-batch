@@ -27,6 +27,7 @@ public class Task1Config {
     public Job task1Job() {
         return jobBuilderFactory.get("task1Job")
                 .start(task1Step(null))
+                .next(task2Step(null))
                 .build();
     }
 
@@ -37,6 +38,16 @@ public class Task1Config {
                 .tasklet(((stepContribution, chunkContext) -> {
                     task1Service.task1(requestDate);
                     return RepeatStatus.FINISHED;
+                }))
+                .build();
+    }
+
+    @Bean
+    @JobScope
+    public Step task2Step(@Value("#{jobParameters[requestDate]}") String requestDate) {
+        return stepBuilderFactory.get("task2Step")
+                .tasklet(((stepContribution, chunkContext) -> {
+                    throw new IllegalArgumentException("step2에서 실패합니다");
                 }))
                 .build();
     }
