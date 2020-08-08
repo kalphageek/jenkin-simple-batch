@@ -38,8 +38,8 @@ public class ConditionJobConfig {
                     .end() // step3으로 이동하면 Flow가 종료한다.
                 .end() // Job 종료
                 .build();
-
     }
+
     @Bean
     public Step step4() {
         return stepBuilderFactory.get("step4")

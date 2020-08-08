@@ -2,7 +2,7 @@
 
 ## profile:local
 * VM Options : -Dspring.profiles.active=local
-* Program Arguments : --job.name=continuousJob version=1
+* Program Arguments : --job.name=conditionJob version=1
 
 #profile:postgres
 * VM Options : -Dspring.profiles.active=postgres
