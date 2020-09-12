@@ -1,15 +1,15 @@
 pipeline {
-  agent any
-  stages {
-    stage('build') {
-      steps {
-        build 'build'
-      }
+  agent {
+    docker {
+      image 'node:6-alpine'
+      args '-p 3000:3000'
     }
 
-    stage('deploy') {
+  }
+  stages {
+    stage('Build') {
       steps {
-        sh 'sshpass'
+        sh 'mvn clean package'
       }
     }
 
