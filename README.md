@@ -14,6 +14,7 @@ https://jojoldu.tistory.com/328?category=902551
 * Build Periodical (30분 마다 실행)
 H/30 * * * *  
 ## Execute Shell
+### Script
 > "Job Name"과 "년월일시분" 2개 파라미터 전달
 ```bash
 #./mvnw clean package
@@ -27,3 +28,21 @@ echo $WORKSPACE
 yes|cp -rf $JAR_NAME ../../$JAR_NAME
 java -jar -Dspring.active.profiles=postgres $JAR_NAME --job.name=task1Job requestDate=$TODAY
 ```  
+### Script file
+```bash
+$vi jenkins-simple-batch.sh
+#!/bin/bash
+#-------
+REGEX='\w+.sh'
+[[ $0 =~ $REGEX ]]
+SH=${BASH_REMATCH[1]}
+
+JAR_NAME=$(ls -tr ${SH//.sh/}*.jar | tail -n 1)
+echo "jar : $JAR_NAME"
+
+TODAY=$(date +%Y%m%d)
+echo "today : $TODAY"
+#-------
+
+java -jar $JAR_NAME -Dspring.profiles.active=prostgres --job.name=task1Job requestDate=$TODAY
+```
