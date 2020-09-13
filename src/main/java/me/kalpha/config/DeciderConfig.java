@@ -2,6 +2,8 @@ package me.kalpha.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.Step;
@@ -29,6 +31,7 @@ public class DeciderConfig {
     JobBuilderFactory jobBuilderFactory;
     @Autowired
     StepBuilderFactory stepBuilderFactory;
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Bean
     public Job deciderJob() {
@@ -63,6 +66,8 @@ public class DeciderConfig {
 
 
     public static class OddDecider implements JobExecutionDecider {
+        Logger log = LoggerFactory.getLogger(this.getClass());
+
         @Override
         public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
             Random rand = new Random();

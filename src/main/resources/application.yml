@@ -27,5 +27,5 @@ spring:
     hikari:
       maximum-pool-size: 4
     password: pgadmin
-    url: jdbc:postgresql://localhost:5432/kalpha
+    url: jdbc:postgresql://db.deogi:5432/postgres
     username: pgadmin
