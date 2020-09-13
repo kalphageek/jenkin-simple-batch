@@ -13,22 +13,21 @@ https://jojoldu.tistory.com/328?category=902551
 ## 빌드유발
 * Build Periodical (30분 마다 실행)
 H/30 * * * *  
-## Execute Shell
-### Script
-> "Job Name"과 "년월일시분" 2개 파라미터 전달
+## Build
 ```bash
-#./mvnw clean package
+echo ">>project build start!"
+mvn clean package
+
+echo ">> pwd"
 pwd
-cd target
-JAR_NAME=$(ls -r |grep '.jar' | tail -n 1)
+
+JAR_NAME=$(ls target/*.jar | tail -n 1)
 echo "jar name : $JAR_NAME"
-TODAY=$(date +%Y%m%d%H%M)
+
+TODAY=$(date +%Y%m%d)
 echo "today : $TODAY"
-echo $WORKSPACE
-yes|cp -rf $JAR_NAME ../../$JAR_NAME
-java -jar -Dspring.active.profiles=postgres $JAR_NAME --job.name=task1Job requestDate=$TODAY
-```  
-### Script file
+```
+## 빌드 후 조치
 ```bash
 $vi jenkins-simple-batch.sh
 #!/bin/bash
