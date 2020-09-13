@@ -39,7 +39,7 @@ public class DeciderConfig {
 
     @Bean
     public Job deciderJob() {
-        return jobBuilderFactory.get("decider")
+        return jobBuilderFactory.get("deciderJob")
                 .start(startDecider())
                 .next(decider()) // 홀수 | 짝수 구분
                 .from(decider()) // decider의 상태가
