@@ -44,10 +44,10 @@ public class Task1Config {
 
     @Bean
     @JobScope
-    public Step taskFailStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
-        return stepBuilderFactory.get("task2Step")
+    public Step task1StepFail(@Value("#{jobParameters[requestDate]}") String requestDate) {
+        return stepBuilderFactory.get("task1Step")
                 .tasklet(((stepContribution, chunkContext) -> {
-                    throw new IllegalArgumentException("step2에서 실패합니다");
+                    throw new IllegalArgumentException("step1에서 실패합니다");
                 }))
                 .build();
     }

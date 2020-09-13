@@ -2,6 +2,7 @@ package me.kalpha.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.kalpha.service.DeciderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -31,6 +32,9 @@ public class DeciderConfig {
     JobBuilderFactory jobBuilderFactory;
     @Autowired
     StepBuilderFactory stepBuilderFactory;
+    @Autowired
+    DeciderService deciderService;
+
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Bean
@@ -61,11 +65,11 @@ public class DeciderConfig {
 
     @Bean
     public JobExecutionDecider decider() {
-        return new OddDecider();
+        return new OddEvenDecider();
     }
 
 
-    public static class OddDecider implements JobExecutionDecider {
+    public static class OddEvenDecider implements JobExecutionDecider {
         Logger log = LoggerFactory.getLogger(this.getClass());
 
         @Override
@@ -85,7 +89,7 @@ public class DeciderConfig {
     public Step oddStep() {
         return stepBuilderFactory.get("oddStep")
                 .tasklet((stepContribution, chunkContext) -> {
-                    oddStep();
+                    deciderService.oddStep();
                     return RepeatStatus.FINISHED;
                 })
                 .build();
@@ -94,7 +98,7 @@ public class DeciderConfig {
     public Step evenStep() {
         return stepBuilderFactory.get("evenStep")
                 .tasklet((stepContribution, chunkContext) -> {
-                    evenStep();
+                    deciderService.evenStep();
                     return RepeatStatus.FINISHED;
                 })
                 .build();

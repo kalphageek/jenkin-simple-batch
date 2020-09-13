@@ -1,4 +1,6 @@
 # jenkins-simple-batch
+## 참고
+https://jojoldu.tistory.com/328?category=902551
 
 ## profile:local
 * VM Options : -Dspring.profiles.active=local
