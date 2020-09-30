@@ -1,17 +1,11 @@
-# Jenkins 등록 정보
+# 1. Jenkins CICD 등록 정보
 ### profile:postgres
 * VM Options : -Dspring.profiles.active=postgres
-* Program Arguments : --job.name=task1Job requestDate=20200801
 ### Build 매개변수
 ```
 매개변수명 : appName
 Default Value : jenkins-simple-batch
 ``` 
-### 빌드유발
-* Build Periodical (2시간 마다 실행)
-```
-* H/2 * * *
-```  
 ### Pipeline
 ```groovy
 pipeline {
@@ -61,4 +55,21 @@ pipeline {
         }
     }
 }
+```
+# 2. Jenkins EXEC 등록 정보
+### Program Arguments
+* Program Arguments : --job.name=task1Job requestDate=20200801
+### Build 매개변수
+```
+매개변수명 : appName
+Default Value : jenkins-simple-batch
+``` 
+### 빌드유발
+* Build Periodical (2시간 마다 실행)
+```
+0 H/2 * * *
+```  
+### Build
+```
+ssh jjd@api1.deogi workspace/${appName}/service-start.sh ${appName}
 ```
