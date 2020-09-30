@@ -1,47 +1,64 @@
-# jenkins-simple-batch
-## 참고
-https://jojoldu.tistory.com/328?category=902551
-
-## profile:local
-* VM Options : -Dspring.profiles.active=local
-* Program Arguments : --job.name=decider version=1
-
-#profile:postgres
+# Jenkins 등록 정보
+### profile:postgres
 * VM Options : -Dspring.profiles.active=postgres
 * Program Arguments : --job.name=task1Job requestDate=20200801
-
-## 빌드유발
-* Build Periodical (30분 마다 실행)
-H/30 * * * *  
-## Build
-```bash
-echo ">>project build start!"
-mvn clean package
-
-echo ">> pwd"
-pwd
-
-JAR_NAME=$(ls target/*.jar | tail -n 1)
-echo "jar name : $JAR_NAME"
-
-TODAY=$(date +%Y%m%d)
-echo "today : $TODAY"
+### Build 매개변수
 ```
-## 빌드 후 조치
-```bash
-$vi jenkins-simple-batch.sh
-#!/bin/bash
-#-------
-REGEX='\w+.sh'
-[[ $0 =~ $REGEX ]]
-SH=${BASH_REMATCH[1]}
+매개변수명 : appName
+Default Value : jenkins-simple-batch
+``` 
+### 빌드유발
+* Build Periodical (2시간 마다 실행)
+```
+* H/2 * * *
+```  
+### Pipeline
+```groovy
+pipeline {
+    agent any
 
-JAR_NAME=$(ls -tr ${SH//.sh/}*.jar | tail -n 1)
-echo "jar : $JAR_NAME"
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
 
-TODAY=$(date +%Y%m%d)
-echo "today : $TODAY"
-#-------
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'git@github.com:kalphageek/jenkins-simple-batch.git'
 
-java -jar $JAR_NAME -Dspring.profiles.active=prostgres --job.name=task1Job requestDate=$TODAY
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+        
+        stage('Delivery') {
+            steps {
+                sh '''
+                    cd target
+                    JAR_NAME=$(ls *.jar | tail -n 1)
+                    echo ".jar name : $JAR_NAME"
+                    ssh jjd@api1.deogi mkdir -p workspace/${appName}/target
+                    scp ../service-start.sh jjd@api1.deogi:workspace/${appName}/
+                    ssh jjd@api1.deogi chmod 755 workspace/${appName}/service-start.sh
+                    scp $JAR_NAME jjd@api1.deogi:workspace/${appName}/target/
+                    ssh jjd@api1.deogi "cd workspace/${appName}/target; ln -sf $JAR_NAME application.jar"
+                '''
+            }
+        }
+    }
+}
 ```
